@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Loader with GIT</string>
+
+
+    <string name="SERVER_NAME">loader001</string>
+    <string name="SERVER_PORT">18080</string>
+
+    <!-- Паттерны для парсера -->
+    <string name="pattern_Cmd_Value">[\\w\\s\\@.:;%#/\\^\\?\\(\\)\\[\\]\\|\\/\\+\\-\*\"]+</string>
+    <string name="pattern_Cmd_Name">\\w+</string>
+    <string name="pattern_EndOfLine">\n</string>
+
+    <string name="MESSAGE_DEVICE_ID_KEYWORD">deviceid</string>
+    <string name="MESSAGE_DEVICE_NAME_KEYWORD">username</string>
+    <string name="MESSAGE_TASK_ID_KEYWORD">taskid</string>
+    <string name="MESSAGE_OPER_ID_KEYWORD">oper</string>
+    <string name="MESSAGE_SERVER_ID_KEYWORD">serverid</string>
+    <string name="MESSAGE_SERVER_NAME_KEYWORD">servername</string>
+    <string name="MESSAGE_USER_ID_KEYWORD">username</string>
+    <string name="MESSAGE_WEIGHT_KEYWORD">weight</string>
+    <string name="MESSAGE_VALUE_KEYWORD">value</string>
+
+</resources>

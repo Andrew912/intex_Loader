@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.and.loader.MainActivity">
+
+    <LinearLayout
+        android:id="@+id/Main"
+        android:layout_width="304dp"
+        android:layout_height="493dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
+
+        <FrameLayout
+            android:id="@+id/FrameMain"
+            android:layout_width="match_parent"
+            android:layout_height="474dp">
+
+            <LinearLayout
+                android:id="@+id/L0"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_0_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textSize="30sp" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/button_0_data_now"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="получено сообщение"
+                        android:visibility="invisible" />
+                </FrameLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/L1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/text_1_Header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ожидание запроса"
+                    android:textAlignment="center"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:id="@+id/text_1_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textSize="30sp" />
+
+                <Button
+                    android:id="@+id/button_1_Call"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:layout_weight="0.12"
+                    android:text="запрос"
+                    android:textSize="30sp"
+                    android:visibility="invisible" />
+
+                <Button
+                    android:id="@+id/button_1_Done"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:text="закончить"
+                    android:textSize="30sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/L2_ServiceRequest"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/text_2_Header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Запрос на обслуживание"
+                    android:textAlignment="center"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:id="@+id/text_2_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textSize="50sp" />
+
+                <Button
+                    android:id="@+id/button_2_Cancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:layout_weight="0.12"
+                    android:text="отказ"
+                    android:textSize="30sp" />
+
+                <Button
+                    android:id="@+id/button_2_Ok"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    android:text="принять"
+                    android:textSize="30sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/L3_Loading"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/text_3_Header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Погрузка"
+                    android:textAlignment="center"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:id="@+id/text_3_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textSize="50sp" />
+
+                <TextView
+                    android:id="@+id/text_3_weigt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/holo_orange_dark"
+                    android:textSize="130sp"
+                    android:textStyle="bold" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="88dp">
+
+                    <Button
+                        android:id="@+id/button_3_Refresh"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:background="@android:color/holo_green_dark"
+                        android:text="обновить"
+                        android:textSize="45sp"
+                        android:textStyle="bold"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:id="@+id/button_3_Ok"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:background="@android:color/holo_green_dark"
+                        android:text="закончено"
+                        android:textSize="45sp"
+                        android:textStyle="bold"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:id="@+id/button_3_Cancel"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:layout_weight="0.12"
+                        android:background="?attr/colorButtonNormal"
+                        android:text="прервать"
+                        android:textSize="45sp" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/L5_WaitBegin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/text_5_Header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ожидание"
+                    android:textAlignment="center"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:id="@+id/text_5_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textSize="50sp" />
+
+                <TextView
+                    android:id="@+id/text_5_weigt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/holo_orange_dark"
+                    android:textSize="130sp"
+                    android:textStyle="bold" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="88dp">
+
+                    <Button
+                        android:id="@+id/button_5_Refresh"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:background="@android:color/holo_green_dark"
+                        android:text="обновить"
+                        android:textSize="45sp"
+                        android:textStyle="bold"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:id="@+id/button_5_getBegin"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:background="@android:color/holo_green_dark"
+                        android:text="начать"
+                        android:textSize="45sp"
+                        android:textStyle="bold"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:id="@+id/button_5_Cancel"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:layout_weight="0.12"
+                        android:background="?attr/colorButtonNormal"
+                        android:text="отмена"
+                        android:textSize="45sp" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/L4_Done"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/text_4_Header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Погрузка"
+                    android:textAlignment="center"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:id="@+id/text_4_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textSize="50sp" />
+
+                <TextView
+                    android:id="@+id/text_4_weigt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/holo_orange_dark"
+                    android:textSize="130sp"
+                    android:textStyle="bold" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="88dp">
+
+                    <Button
+                        android:id="@+id/button_4_Ok"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:background="@android:color/holo_green_dark"
+                        android:text="закончено"
+                        android:textSize="45sp"
+                        android:textStyle="bold"
+                        android:visibility="visible" />
+                </FrameLayout>
+
+            </LinearLayout>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
