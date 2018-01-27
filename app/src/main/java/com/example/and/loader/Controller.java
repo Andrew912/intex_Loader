@@ -127,7 +127,7 @@ public class Controller {
 //                serverStatus = ServerStatus.WAIT_WEIGHT;
                 a.textViews[3].setText(printMessageParameters());
                 a.textWeight[3].setText(weightRemain);
-//                a.gotoLayout(LAYOUT_3_LOADING, a.messager.requestString());
+//                activity.gotoLayout(LAYOUT_3_LOADING, activity.messager.requestString());
                 break;
             case B3_Done:
                 a.gotoLayout(LAYOUT_4_DONE, a.messager.requestString());

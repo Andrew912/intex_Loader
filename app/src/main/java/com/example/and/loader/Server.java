@@ -25,7 +25,7 @@ public class Server {
     String
             logTAG = "SERVER: ";
     MainActivity
-            a;
+            activity;
     ServerSocket
             serverSocket;
     String
@@ -46,27 +46,41 @@ public class Server {
         YES,    // положительный ответ на запрос на обслуживание
         NO,     // отрицательный ответ на запрос на обслуживание
         STOP,   // остановить погрузку
-        BUSY    // для "чужих" запросов - "ЗАНЯТ"
+        BUSY,   // для "чужих" запросов - "ЗАНЯТ"
+        NAME    // ответ на запрос "who"
     }
 
     ServerMessage
             serverMessage = ServerMessage.NONE;
 
     enum FromDeviceMessageTypes {
-        LOAD_REQUEST, LOAD_BEGIN, LOAD_WEIGHT, LOAD_STOP, UNKNOWN
+        LOAD_REQUEST,
+        LOAD_BEGIN,
+        LOAD_WEIGHT,
+        LOAD_STOP,
+        WHO,
+        UNKNOWN
     }
 
     FromDeviceMessageTypes
             fromDeviceMessageType;
 
     public Server(MainActivity activity) {
-        this.a = activity;
-        Thread socketServerThread = new Thread(new SocketServerThread());
+        this.activity
+                = activity;
+        Thread socketServerThread
+                = new Thread(new SocketServerThread());
         socketServerThread.start();
     }
 
     // Определение типа входящего сообщения и реакция на него
     FromDeviceMessageTypes messageTypeIs() {
+        // WHO
+        if (p.get(0).equals(activity.getString(R.string.WHO_ARE_YOU_STRING))) {
+            fromDeviceMessageType = FromDeviceMessageTypes.WHO;
+            return FromDeviceMessageTypes.WHO;
+        }
+
         // LOAD_REQUEST
         if (getParam("cmd").equals("load") &
                 paramNow("oper") &
@@ -132,21 +146,18 @@ public class Server {
                     } else {
                         msg = "empty string";
                     }
-
                     Log.i(logTAG, "msg=" + msg);
 
                     p = ExtractParametersOfCommand(msg);
 
                     final String finalMsg = msg;
-                    a.runOnUiThread(new Runnable() {
+                    activity.runOnUiThread(new Runnable() {
 
                         @Override
                         public void run() {
-
-                            a.printOut(finalMsg);
+                            activity.printOut(finalMsg);
                             // Определяем тип входящего сообщения и реакцию на него
                             Choreographer();
-
                         }
                     });
                     SocketServerReplyThread
@@ -191,17 +202,17 @@ public class Server {
         if (messageType == FromDeviceMessageTypes.LOAD_REQUEST) {
 
             // Статус сервера: WAIT_REQUEST ("Ожидает запрос на обслуживание")
-            if (a.c.serverStatus == Controller.ServerStatus.WAIT_REQUEST) {
+            if (activity.c.serverStatus == Controller.ServerStatus.WAIT_REQUEST) {
 
                 // Статус ответа: NONE (неопределен)
-                if (a.c.serverAcceptStatus == Controller.ServerAcceptStatus.NONE) {
+                if (activity.c.serverAcceptStatus == Controller.ServerAcceptStatus.NONE) {
                     // Это - первичный запрос на обслуживание
-                    a.b1_Call.callOnClick();
+                    activity.b1_Call.callOnClick();
                 }
                 return;
             }
             // Статус ответа: REJECT (отклонен)
-            if (a.c.serverAcceptStatus == Controller.ServerAcceptStatus.REJECT) {
+            if (activity.c.serverAcceptStatus == Controller.ServerAcceptStatus.REJECT) {
                 serverMessage = ServerMessage.NO;
                 return;
             }
@@ -211,10 +222,10 @@ public class Server {
              * Девайсу подтверждение запроса на обслуживание еще раз.
              */
             // Статус сервера: WAIT_BEGIN ("Ожидает начало погрузки")
-            if (a.c.serverStatus == Controller.ServerStatus.WAIT_BEGIN) {
+            if (activity.c.serverStatus == Controller.ServerStatus.WAIT_BEGIN) {
 
                 // Статус ответа: ACCEPT (подтвержден)
-                if (a.c.serverAcceptStatus == Controller.ServerAcceptStatus.ACCEPT) {
+                if (activity.c.serverAcceptStatus == Controller.ServerAcceptStatus.ACCEPT) {
                     serverMessage = ServerMessage.YES;
                 }
             }
@@ -228,14 +239,14 @@ public class Server {
          */
         if (messageType == FromDeviceMessageTypes.LOAD_BEGIN) {
             // Статус сервера "Ожидает начало погрузки"
-            if (a.c.serverStatus == Controller.ServerStatus.WAIT_BEGIN) {
-                a.c.weightRemain = getParam("weight");
-                a.b5_getBegin.callOnClick();
+            if (activity.c.serverStatus == Controller.ServerStatus.WAIT_BEGIN) {
+                activity.c.weightRemain = getParam("weight");
+                activity.b5_getBegin.callOnClick();
                 return;
             }
-            if (a.c.serverStatus == Controller.ServerStatus.WAIT_WEIGHT) {
-                a.c.weightRemain = getParam("weight");
-                a.b3_Refresh.callOnClick();
+            if (activity.c.serverStatus == Controller.ServerStatus.WAIT_WEIGHT) {
+                activity.c.weightRemain = getParam("weight");
+                activity.b3_Refresh.callOnClick();
                 return;
             }
         }
@@ -246,9 +257,9 @@ public class Server {
          */
         if (messageType == FromDeviceMessageTypes.LOAD_WEIGHT) {
             // Статус сервера "ожидает вес"
-            if (a.c.serverStatus == Controller.ServerStatus.WAIT_WEIGHT) {
-                a.c.weightRemain = getParam("weight");
-                a.b3_Refresh.callOnClick();
+            if (activity.c.serverStatus == Controller.ServerStatus.WAIT_WEIGHT) {
+                activity.c.weightRemain = getParam("weight");
+                activity.b3_Refresh.callOnClick();
             }
             return;
         }
@@ -258,8 +269,8 @@ public class Server {
          */
         if (messageType == FromDeviceMessageTypes.LOAD_STOP) {
             // Статус сервера "ожидает вес"
-            if (a.c.serverStatus == Controller.ServerStatus.WAIT_WEIGHT) {
-                a.b3_Done.callOnClick();
+            if (activity.c.serverStatus == Controller.ServerStatus.WAIT_WEIGHT) {
+                activity.b3_Done.callOnClick();
             }
             return;
         }
@@ -270,15 +281,18 @@ public class Server {
          *  сообщение игнорируется
          */
         if (messageType == FromDeviceMessageTypes.UNKNOWN) {
-            if (a.c.serverStatus == Controller.ServerStatus.WAIT_WEIGHT) {
-                a.c.serverStatus = Controller.ServerStatus.WAIT_WEIGHT;
-                a.b3_Refresh.callOnClick();
+            if (activity.c.serverStatus == Controller.ServerStatus.WAIT_WEIGHT) {
+                activity.c.serverStatus = Controller.ServerStatus.WAIT_WEIGHT;
+                activity.b3_Refresh.callOnClick();
             }
             return;
         }
 
     }
 
+    /**
+     *
+     */
     private class SocketServerReplyThread extends Thread {
         private Socket hostThreadSocket;
         int cnt;
@@ -297,11 +311,11 @@ public class Server {
                 printStream.print(formatMessageToReply(requsetTypeIsHTML, makeMessageToReply()));
                 printStream.close();
 //                message += "replayed: " + msgReply + "\n";
-//                a.runOnUiThread(new Runnable() {
+//                activity.runOnUiThread(new Runnable() {
 //
 //                    @Override
 //                    public void run() {
-//                        a.textViews[1].setText(message);
+//                        activity.textViews[1].setText(message);
 //                    }
 //                });
 //
@@ -310,11 +324,11 @@ public class Server {
                 e.printStackTrace();
                 message += "Something wrong! " + e.toString() + "\n";
             }
-//            a.runOnUiThread(new Runnable() {
+//            activity.runOnUiThread(new Runnable() {
 //
 //                @Override
 //                public void run() {
-//                    a.textViews[1].setText(message);
+//                    activity.textViews[1].setText(message);
 //                }
 //            });
         }
@@ -323,32 +337,45 @@ public class Server {
     // Строка для передачи абоненту
     String makeMessageToReply() {
         switch (serverMessage) {
+            case NAME:
+                return "";
             case NONE:
-                return a.messager.msg_Ok() + " MessageType=" + fromDeviceMessageType + " serverStatus=" + a.c.serverStatus;
+                return activity.messager.msg_Ok() + " MessageType=" + fromDeviceMessageType + " serverStatus=" + activity.c.serverStatus;
             case BUSY:
                 serverMessage = ServerMessage.NONE;
-                return a.messager.msg_serviceRequestAccept_No(getParam("oper")) + " MessageType=" + fromDeviceMessageType + " serverStatus=" + a.c.serverStatus;
+                return activity.messager.msg_serviceRequestAccept_No(getParam("oper")) + " MessageType=" + fromDeviceMessageType + " serverStatus=" + activity.c.serverStatus;
             case YES:
                 serverMessage = ServerMessage.NONE;
-                return a.messager.msg_serviceRequestAccept_Yes(getParam("oper")) + " MessageType=" + fromDeviceMessageType + " serverStatus=" + a.c.serverStatus;
+                return activity.messager.msg_serviceRequestAccept_Yes(getParam("oper")) + " MessageType=" + fromDeviceMessageType + " serverStatus=" + activity.c.serverStatus;
             case NO:
                 serverMessage = ServerMessage.NONE;
-                return a.messager.msg_serviceRequestAccept_No(getParam("oper")) + " MessageType=" + fromDeviceMessageType + " serverStatus=" + a.c.serverStatus;
+                return activity.messager.msg_serviceRequestAccept_No(getParam("oper")) + " MessageType=" + fromDeviceMessageType + " serverStatus=" + activity.c.serverStatus;
             case STOP:
                 serverMessage = ServerMessage.NONE;
-                return a.messager.msg_serviceStop(a.c.operId);
+                return activity.messager.msg_serviceStop(activity.c.operId);
         }
-        return a.c.printMessageParameters();
+        return activity.c.printMessageParameters();
     }
 
     // Выделяем отдельные команды
     public ArrayList<TableElement_MessageParameter> ExtractParametersOfCommand(String inS) {
         Log.i(logTAG, "ExtractParametersOfCommand: start");
-        ArrayList<TableElement_MessageParameter> parameters;
-        parameters = new ArrayList<>();
-        Pattern pattern = Pattern.compile(a.getString(R.string.pattern_Cmd_Name) + "=\'" + a.getString(R.string.pattern_Cmd_Value) + "\'");
-        Matcher matcher = pattern.matcher(inS);
-        TableElement_MessageParameter t = new TableElement_MessageParameter();
+        ArrayList<TableElement_MessageParameter>
+                parameters;
+        parameters
+                = new ArrayList<>();
+        // Если это PING
+        if (inS.equals(activity.getString(R.string.WHO_ARE_YOU_STRING))) {
+            parameters.add(new TableElement_MessageParameter(
+                    activity.getString(R.string.WHO_ARE_YOU_STRING,
+                            activity.getString(R.string.WHO_ARE_YOU_STRING));
+        }
+        Pattern pattern
+                = Pattern.compile(activity.getString(R.string.pattern_Cmd_Name) + "=\'" + activity.getString(R.string.pattern_Cmd_Value) + "\'");
+        Matcher matcher
+                = pattern.matcher(inS);
+        TableElement_MessageParameter t
+                = new TableElement_MessageParameter();
         while (matcher.find()) {
             t = extractParam(matcher.group());
             Log.i(logTAG, "ExtractParametersOfCommand: name=" + t.getName() + " value=" + t.getValue());
@@ -407,11 +434,11 @@ public class Server {
             return false;
         }
 
-        if (a.c.deviceName == null) {
+        if (activity.c.deviceName == null) {
             return true;
         }
 
-        if (getParam("device").equals(a.c.deviceName)) {
+        if (getParam("device").equals(activity.c.deviceName)) {
             return true;
         } else {
             return false;
@@ -430,10 +457,10 @@ public class Server {
 
     private TableElement_MessageParameter extractParam(String inS) {
         TableElement_MessageParameter retV = null;
-        Pattern patternOfName = Pattern.compile("^" + a.getString(R.string.pattern_Cmd_Name));
+        Pattern patternOfName = Pattern.compile("^" + activity.getString(R.string.pattern_Cmd_Name));
         Matcher matcherOfName = patternOfName.matcher(inS);
         if (matcherOfName.find()) {
-            Pattern patternOfValue = Pattern.compile("=\'" + a.getString(R.string.pattern_Cmd_Value) + "\'$");
+            Pattern patternOfValue = Pattern.compile("=\'" + activity.getString(R.string.pattern_Cmd_Value) + "\'$");
             Matcher matcherOfValue = patternOfValue.matcher(inS);
             if (matcherOfValue.find()) {
                 retV = new TableElement_MessageParameter(matcherOfName.group(), matcherOfValue.group().replace("'", "").replace("=", ""));

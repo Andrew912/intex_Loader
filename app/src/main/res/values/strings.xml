@@ -20,4 +20,7 @@
     <string name="MESSAGE_WEIGHT_KEYWORD">weight</string>
     <string name="MESSAGE_VALUE_KEYWORD">value</string>
 
+    <!-- Строка запроса имени сервера -->
+    <string name="WHO_ARE_YOU_STRING">who</string>
+
 </resources>

@@ -13,8 +13,8 @@ package com.example.and.loader;
 public class TableElement_MessageParameter {
     private String  name;
     private String  value;
-
     public TableElement_MessageParameter() {
+
     }
 
     public TableElement_MessageParameter(String name, String value) {
