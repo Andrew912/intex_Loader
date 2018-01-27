@@ -81,10 +81,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        config = new Config(this);
-        c = new Controller(this);
-        messager = new Messager(this);
-        server = new Server(this);
+        config
+                = new Config(this);
+        c
+                = new Controller(this);
+        messager
+                = new Messager(this);
+        server
+                = new Server(this);
 
         layouts = new LinearLayout[numOfLayouts];
         layouts[0] = (LinearLayout) findViewById(R.id.L0);
@@ -337,8 +341,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void printOut(String m) {
-//        textViews[1].setText(m);
-        statusString.setText(m);
+        statusString
+                .setText(m);
     }
 
     void Beep() {
@@ -346,9 +350,12 @@ public class MainActivity extends AppCompatActivity {
          * Звуковой сигнал о запросе на погрузку
          */
         try {
-            Uri notify = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notify);
-            r.play();
+            Uri notify
+                    = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r
+                    = RingtoneManager.getRingtone(getApplicationContext(), notify);
+            r
+                    .play();
         } catch (Exception e) {
             e.printStackTrace();
         }

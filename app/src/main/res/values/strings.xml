@@ -2,7 +2,7 @@
     <string name="app_name">Loader with GIT</string>
 
 
-    <string name="SERVER_NAME">loader001</string>
+    <string name="SERVER_NAME">loader.001</string>
     <string name="SERVER_PORT">18080</string>
 
     <!-- Паттерны для парсера -->

@@ -68,6 +68,7 @@ public class Server {
     public Server(MainActivity activity) {
         this.activity
                 = activity;
+        Log.i("*****", "Server: Start");
         Thread socketServerThread
                 = new Thread(new SocketServerThread());
         socketServerThread.start();
@@ -75,9 +76,11 @@ public class Server {
 
     // Определение типа входящего сообщения и реакция на него
     FromDeviceMessageTypes messageTypeIs() {
+        Log.i("FromDeviceMessageTypes", "start recognition = '" + p.get(0).getName() + "'");
         // WHO
-        if (p.get(0).equals(activity.getString(R.string.WHO_ARE_YOU_STRING))) {
+        if (p.get(0).getName().equals(activity.getString(R.string.WHO_ARE_YOU_STRING))) {
             fromDeviceMessageType = FromDeviceMessageTypes.WHO;
+            Log.i("FromDeviceMessageTypes", "WHO");
             return FromDeviceMessageTypes.WHO;
         }
 
@@ -177,7 +180,17 @@ public class Server {
      * Определяет действие, исходя из статуса и входного сигнала.
      */
     void Choreographer() {
-        FromDeviceMessageTypes messageType = messageTypeIs();
+        FromDeviceMessageTypes messageType
+                = messageTypeIs();
+        Log.i("Choreographer", "messageType=" + messageType);
+        /**
+         * Если поступил запрос "Кто?", отправыть ответ
+         */
+        if (messageType == FromDeviceMessageTypes.WHO) {
+            serverMessage = ServerMessage.NAME;
+            return;
+        }
+
         /**
          * Если отправитель - это не текущий юзер, то игнорируем все запросы, кроме
          * запроса на обслуживание.
@@ -304,12 +317,17 @@ public class Server {
 
         @Override
         public void run() {
-            OutputStream outputStream;
+            OutputStream
+                    outputStream;
             try {
-                outputStream = hostThreadSocket.getOutputStream();
-                PrintStream printStream = new PrintStream(outputStream);
-                printStream.print(formatMessageToReply(requsetTypeIsHTML, makeMessageToReply()));
-                printStream.close();
+                outputStream
+                        = hostThreadSocket.getOutputStream();
+                PrintStream printStream
+                        = new PrintStream(outputStream);
+                printStream
+                        .print(formatMessageToReply(requsetTypeIsHTML, makeMessageToReply()));
+                printStream
+                        .close();
 //                message += "replayed: " + msgReply + "\n";
 //                activity.runOnUiThread(new Runnable() {
 //
@@ -336,20 +354,36 @@ public class Server {
 
     // Строка для передачи абоненту
     String makeMessageToReply() {
+        Log.i("makeMessageToReply", "serverMessage=" + serverMessage);
         switch (serverMessage) {
             case NAME:
-                return "";
+                serverMessage = ServerMessage.NONE;
+                Log.i("makeMessageToReply", "return=" + activity.getString(R.string.SERVER_NAME));
+                return
+                        activity.getString(R.string.SERVER_NAME);
             case NONE:
-                return activity.messager.msg_Ok() + " MessageType=" + fromDeviceMessageType + " serverStatus=" + activity.c.serverStatus;
+                return
+                        activity.messager.msg_Ok() +
+                                " MessageType=" + fromDeviceMessageType +
+                                " serverStatus=" + activity.c.serverStatus;
             case BUSY:
                 serverMessage = ServerMessage.NONE;
-                return activity.messager.msg_serviceRequestAccept_No(getParam("oper")) + " MessageType=" + fromDeviceMessageType + " serverStatus=" + activity.c.serverStatus;
+                return
+                        activity.messager.msg_serviceRequestAccept_No(getParam("oper")) +
+                                " MessageType=" + fromDeviceMessageType +
+                                " serverStatus=" + activity.c.serverStatus;
             case YES:
                 serverMessage = ServerMessage.NONE;
-                return activity.messager.msg_serviceRequestAccept_Yes(getParam("oper")) + " MessageType=" + fromDeviceMessageType + " serverStatus=" + activity.c.serverStatus;
+                return
+                        activity.messager.msg_serviceRequestAccept_Yes(getParam("oper")) +
+                                " MessageType=" + fromDeviceMessageType +
+                                " serverStatus=" + activity.c.serverStatus;
             case NO:
                 serverMessage = ServerMessage.NONE;
-                return activity.messager.msg_serviceRequestAccept_No(getParam("oper")) + " MessageType=" + fromDeviceMessageType + " serverStatus=" + activity.c.serverStatus;
+                return
+                        activity.messager.msg_serviceRequestAccept_No(getParam("oper")) +
+                                " MessageType=" + fromDeviceMessageType +
+                                " serverStatus=" + activity.c.serverStatus;
             case STOP:
                 serverMessage = ServerMessage.NONE;
                 return activity.messager.msg_serviceStop(activity.c.operId);
@@ -359,27 +393,29 @@ public class Server {
 
     // Выделяем отдельные команды
     public ArrayList<TableElement_MessageParameter> ExtractParametersOfCommand(String inS) {
-        Log.i(logTAG, "ExtractParametersOfCommand: start");
+        Log.i(logTAG, "ExtractParametersOfCommand: inS='" + inS + "'");
         ArrayList<TableElement_MessageParameter>
                 parameters;
         parameters
                 = new ArrayList<>();
         // Если это PING
-        if (inS.equals(activity.getString(R.string.WHO_ARE_YOU_STRING))) {
-            parameters.add(new TableElement_MessageParameter(
-                    activity.getString(R.string.WHO_ARE_YOU_STRING,
-                            activity.getString(R.string.WHO_ARE_YOU_STRING));
-        }
-        Pattern pattern
-                = Pattern.compile(activity.getString(R.string.pattern_Cmd_Name) + "=\'" + activity.getString(R.string.pattern_Cmd_Value) + "\'");
-        Matcher matcher
-                = pattern.matcher(inS);
-        TableElement_MessageParameter t
-                = new TableElement_MessageParameter();
-        while (matcher.find()) {
-            t = extractParam(matcher.group());
-            Log.i(logTAG, "ExtractParametersOfCommand: name=" + t.getName() + " value=" + t.getValue());
-            parameters.add(t);
+        Log.i(logTAG, "ExtractParametersOfCommand: who=" + inS.substring(0, 3));
+        if (inS.substring(0, 3).equals(activity.getString(R.string.WHO_ARE_YOU_STRING))) {
+            Log.i(logTAG, "ExtractParametersOfCommand: start");
+            parameters.add(
+                    new TableElement_MessageParameter(activity.getString(R.string.WHO_ARE_YOU_STRING), activity.getString(R.string.WHO_ARE_YOU_STRING)));
+        } else {
+            Pattern pattern
+                    = Pattern.compile(activity.getString(R.string.pattern_Cmd_Name) + "=\'" + activity.getString(R.string.pattern_Cmd_Value) + "\'");
+            Matcher matcher
+                    = pattern.matcher(inS);
+            TableElement_MessageParameter t
+                    = new TableElement_MessageParameter();
+            while (matcher.find()) {
+                t = extractParam(matcher.group());
+                Log.i(logTAG, "ExtractParametersOfCommand: name=" + t.getName() + " value=" + t.getValue());
+                parameters.add(t);
+            }
         }
         return parameters;
     }
@@ -481,7 +517,7 @@ public class Server {
 //
 //                Wisdom
         if (isHTML == false) {
-            return message;
+            return message+"\r";
         }
         return
                 "HTTP/1.1 200 OK\n" +
