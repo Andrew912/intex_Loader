@@ -3,8 +3,11 @@ package com.example.and.loader;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -12,6 +15,9 @@ import android.widget.TextView;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,27 +46,27 @@ public class MainActivity extends AppCompatActivity {
     int
             currentLayout;
 
-    static final int LAYOUT_0 = 0;
-    static final int LAYOUT_1_WAIT = 1;
-    static final int LAYOUT_2_REQUEST = 2;
-    static final int LAYOUT_3_LOADING = 3;
-    static final int LAYOUT_4_DONE = 4;
-    static final int LAYOUT_5_WAITBEGIN = 5;
-
-    static final int B0_Start = 101;
-    static final int B0_DATA = 102;
-    static final int B1_Call = 150;
-    static final int B1_Exit = 151;
-    static final int B1_Refresh = 152;
-    static final int B2_Accept = 201;
-    static final int B2_Reject = 202;
-    static final int B3_Abort = 301;
-    static final int B3_Done = 302;
-    static final int B3_Refresh = 303;
-    static final int B5_Abort = 501;
-    static final int B5_getBegin = 502;
-    static final int B5_Refresh = 503;
-    static final int B4_Done = 401;
+    static final int
+            LAYOUT_0 = 0,
+            LAYOUT_1_WAIT = 1,
+            LAYOUT_2_REQUEST = 2,
+            LAYOUT_3_LOADING = 3,
+            LAYOUT_4_DONE = 4,
+            LAYOUT_5_WAITBEGIN = 5,
+            B0_Start = 101,
+            B0_DATA = 102,
+            B1_Call = 150,
+            B1_Exit = 151,
+            B1_Refresh = 152,
+            B2_Accept = 201,
+            B2_Reject = 202,
+            B3_Abort = 301,
+            B3_Done = 302,
+            B3_Refresh = 303,
+            B5_Abort = 501,
+            B5_getBegin = 502,
+            B5_Refresh = 503,
+            B4_Done = 401;
 
     Controller
             c;
@@ -75,6 +81,18 @@ public class MainActivity extends AppCompatActivity {
             timer_ClickButton_B2_Accept;
     String
             displayMeggase = "display";
+
+    Handler[]
+            handlers_textView,
+            handlers_textWeight,
+            handlers_layouts;
+
+
+//    Handler
+//            handler1,
+//            handler2,
+//            handler3,
+//            handler4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,11 +115,12 @@ public class MainActivity extends AppCompatActivity {
         layouts[3] = (LinearLayout) findViewById(R.id.L3_Loading);
         layouts[4] = (LinearLayout) findViewById(R.id.L4_Done);
         layouts[5] = (LinearLayout) findViewById(R.id.L5_WaitBegin);
-        layoutVisiblitySet(1);
+//        layoutVisiblitySet(1);
 
         statusString = (TextView) findViewById(R.id.text);
 
-        textViews = new TextView[numOfLayouts];
+        textViews
+                = new TextView[numOfLayouts];
         textViews[0] = (TextView) findViewById(R.id.text_0_info);
         textViews[1] = (TextView) findViewById(R.id.text_1_info);
         textViews[2] = (TextView) findViewById(R.id.text_2_info);
@@ -109,13 +128,194 @@ public class MainActivity extends AppCompatActivity {
         textViews[4] = (TextView) findViewById(R.id.text_4_info);
         textViews[5] = (TextView) findViewById(R.id.text_5_info);
 
-        textWeight = new TextView[numOfLayouts];
+        textWeight
+                = new TextView[numOfLayouts];
 //        textWeight[0] = (TextView) findViewById(R.id.text_0_info);
 //        textWeight[1] = (TextView) findViewById(R.id.text_1_info);
 //        textWeight[2] = (TextView) findViewById(R.id.text_2_info);
-        textWeight[3] = (TextView) findViewById(R.id.text_3_weigt);
 //        textWeight[4] = (TextView) findViewById(R.id.text_4_info);
+        textWeight[3] = (TextView) findViewById(R.id.text_3_weigt);
         textWeight[5] = (TextView) findViewById(R.id.text_5_weigt);
+
+        /* Хандлеры лайаутов*/
+        handlers_layouts
+                = new Handler[numOfLayouts];
+
+        handlers_layouts[0]
+                = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                LinearLayout layout =
+                        (LinearLayout) findViewById(R.id.L0);
+                if (msg.obj.equals("VISIBLE")) {
+                    layout.setVisibility(VISIBLE);
+                } else {
+                    layout.setVisibility(INVISIBLE);
+                }
+            }
+        };
+
+        handlers_layouts[1]
+                = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                LinearLayout layout =
+                        (LinearLayout) findViewById(R.id.L1);
+                if (msg.obj.equals("VISIBLE")) {
+                    layout.setVisibility(VISIBLE);
+                } else {
+                    layout.setVisibility(INVISIBLE);
+                }
+            }
+        };
+
+        handlers_layouts[2]
+                = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                LinearLayout layout =
+                        (LinearLayout) findViewById(R.id.L2_ServiceRequest);
+                if (msg.obj.equals("VISIBLE")) {
+                    layout.setVisibility(VISIBLE);
+                } else {
+                    layout.setVisibility(INVISIBLE);
+                }
+            }
+        };
+
+        handlers_layouts[3]
+                = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                LinearLayout layout =
+                        (LinearLayout) findViewById(R.id.L3_Loading);
+                if (msg.obj.equals("VISIBLE")) {
+                    layout.setVisibility(VISIBLE);
+                } else {
+                    layout.setVisibility(INVISIBLE);
+                }
+            }
+        };
+
+        handlers_layouts[4]
+                = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                LinearLayout layout =
+                        (LinearLayout) findViewById(R.id.L4_Done);
+                if (msg.obj.equals("VISIBLE")) {
+                    layout.setVisibility(VISIBLE);
+                } else {
+                    layout.setVisibility(INVISIBLE);
+                }
+            }
+        };
+
+        handlers_layouts[5]
+                = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                LinearLayout layout =
+                        (LinearLayout) findViewById(R.id.L5_WaitBegin);
+                if (msg.obj.equals("VISIBLE")) {
+                    layout.setVisibility(VISIBLE);
+                } else {
+                    layout.setVisibility(INVISIBLE);
+                }
+            }
+        };
+
+        layoutVisiblitySet(1);
+
+        /* Хандлеры поля "вес" */
+        handlers_textWeight
+                = new Handler[numOfLayouts];
+
+        handlers_textWeight[3]
+                = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                TextView infoTextView =
+                        (TextView) findViewById(R.id.text_3_weigt);
+                infoTextView.setText(msg.obj.toString());
+            }
+        };
+
+        handlers_textWeight[5]
+                = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                TextView infoTextView =
+                        (TextView) findViewById(R.id.text_5_weigt);
+                infoTextView.setText(msg.obj.toString());
+            }
+        };
+
+        /* Хандлеры текстового поля */
+        handlers_textView
+                = new Handler[numOfLayouts];
+
+        handlers_textView[0]
+                = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                TextView infoTextView =
+                        (TextView) findViewById(R.id.text_0_info);
+                infoTextView.setText(msg.obj.toString());
+            }
+        };
+
+        handlers_textView[1]
+                = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                TextView infoTextView =
+                        (TextView) findViewById(R.id.text_1_info);
+                infoTextView.setText(msg.obj.toString());
+            }
+        };
+
+        handlers_textView[2]
+                = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                TextView infoTextView =
+                        (TextView) findViewById(R.id.text_2_info);
+                infoTextView.setText(msg.obj.toString());
+            }
+        };
+
+        handlers_textView[3]
+                = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                TextView infoTextView =
+                        (TextView) findViewById(R.id.text_3_info);
+                infoTextView.setText(msg.obj.toString());
+            }
+        };
+
+        handlers_textView[4]
+                = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                TextView infoTextView =
+                        (TextView) findViewById(R.id.text_4_info);
+                infoTextView.setText(msg.obj.toString());
+            }
+        };
+
+        handlers_textView[5]
+                = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                TextView infoTextView =
+                        (TextView) findViewById(R.id.text_5_info);
+                infoTextView.setText(msg.obj.toString());
+            }
+        };
+
+        /* Управление выводом видимостью слоёв  */
 
         // b0_Data
         b0_Data = (Button) findViewById(R.id.button_0_data_now);
@@ -247,6 +447,9 @@ public class MainActivity extends AppCompatActivity {
 
     // Переключение на слой
     void gotoLayout(int newLayout, String pTextToInfo) {
+
+        Log.i("gotoLayout", "Start");
+
         String textToInfo = pTextToInfo;
         currentLayout = newLayout;
         layoutVisiblitySet(newLayout);                          // Установить видимость слоя
@@ -256,15 +459,19 @@ public class MainActivity extends AppCompatActivity {
             case LAYOUT_1_WAIT:
                 break;
             case LAYOUT_2_REQUEST:
+
+                Log.i("gotoLayout", "LAYOUT_2_REQUEST");
+
                 // Через 5 секунд после попадания в экран нажать кнопку "Принято"
                 timer_ClickButton_B2_Accept = new Timer();
                 ClickButton_B2_Accept click2 = new ClickButton_B2_Accept();
-                timer_ClickButton_B2_Accept.schedule(click2, 5000);
+                timer_ClickButton_B2_Accept.schedule(click2, 10000);
                 break;
             case LAYOUT_3_LOADING:
                 break;
             case LAYOUT_4_DONE:
                 Beep();
+                Log.i("gotoLayout","LAYOUT_4_DONE !!!");
                 // Через 5 секунд после попадания в экран нажать кнопку "Закончить"
                 timer_ClickButton_B4_Done = new Timer();
                 ClickButton_B4_Done click4 = new ClickButton_B4_Done();
@@ -310,18 +517,34 @@ public class MainActivity extends AppCompatActivity {
 
     // Устанавливает видимость экрана по номеру
     void layoutVisiblitySet(int layoutToSet) {
+
+
         for (int i = 0; i < numOfLayouts; i++) {
+            Message msg = new Message();
             if (i == layoutToSet) {
-                layouts[i].setVisibility(View.VISIBLE);
+                msg.obj = "VISIBLE";
             } else {
-                layouts[i].setVisibility(View.INVISIBLE);
+                msg.obj = "INVISIBLE";
             }
+            handlers_layouts[i].sendMessage(msg);
         }
+//        for (int i = 0; i < numOfLayouts; i++) {
+//            if (i == layoutToSet) {
+//                layouts[i].setVisibility(VISIBLE);
+//            } else {
+//                layouts[i].setVisibility(INVISIBLE);
+//            }
+//    }
     }
 
     // Текст в инфоблоке лайаута
     void setTextInLayout(int n, String s) {
-        textViews[n].setText(s);
+
+        Message msg = new Message();
+        msg.obj = s;
+        handlers_textView[n].sendMessage(msg);
+
+//        this.textViews[n].setText(s);
     }
 
     //
@@ -359,6 +582,13 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    void setTextViews(String pmp, String wr) {
+        textViews[3]
+                .setText(pmp);
+        textWeight[3]
+                .setText(wr);
     }
 
 }

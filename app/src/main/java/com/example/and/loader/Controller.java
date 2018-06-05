@@ -1,5 +1,9 @@
 package com.example.and.loader;
 
+import android.app.Notification;
+import android.os.Message;
+import android.util.Log;
+
 import static com.example.and.loader.MainActivity.B0_DATA;
 import static com.example.and.loader.MainActivity.B0_Start;
 import static com.example.and.loader.MainActivity.B1_Call;
@@ -28,6 +32,9 @@ public class Controller {
 
     MainActivity
             a;
+
+    Message
+            msg;
 
     enum ServerBusyStatus {
         FREE, BUSY
@@ -77,7 +84,7 @@ public class Controller {
                 break;
             case B1_Exit:
                 serverBusyStatus = ServerBusyStatus.FREE;
-                a.finish();
+                System.exit(0);
                 break;
             case B1_Refresh:
 
@@ -86,6 +93,7 @@ public class Controller {
                 a.Beep();
                 setMessageParameters();
                 a.server.serverMessage = Server.ServerMessage.NONE;
+                Log.i("Controller", "before gotoLayout(LAYOUT_2_REQUEST)...");
                 a.gotoLayout(LAYOUT_2_REQUEST, printMessageParameters());
                 break;
             case B2_Reject:
@@ -115,7 +123,13 @@ public class Controller {
             case B5_getBegin:
                 // Если получен сигнал начала погрузки
                 serverStatus = ServerStatus.WAIT_WEIGHT;
-                a.textWeight[3].setText(weightRemain);
+
+                msg = new Message();
+                msg.obj = weightRemain;
+                a.handlers_textWeight[3].sendMessage(msg);
+
+//                a.textWeight[3].setText(weightRemain);
+
                 a.gotoLayout(LAYOUT_3_LOADING, a.messager.requestString());
                 break;
             case B3_Abort:
@@ -125,9 +139,20 @@ public class Controller {
                 break;
             case B3_Refresh:
 //                serverStatus = ServerStatus.WAIT_WEIGHT;
-                a.textViews[3].setText(printMessageParameters());
-                a.textWeight[3].setText(weightRemain);
-//                activity.gotoLayout(LAYOUT_3_LOADING, activity.messager.requestString());
+
+//                a.setTextViews(printMessageParameters(), weightRemain);
+//                a.textViews[3].setText(printMessageParameters());
+//                a.textWeight[3].setText(weightRemain);
+
+                msg = new Message();
+                msg.obj = printMessageParameters();
+                a.handlers_textView[3].sendMessage(msg);
+
+                msg = new Message();
+                msg.obj = weightRemain;
+                a.handlers_textWeight[3].sendMessage(msg);
+
+                a.gotoLayout(LAYOUT_3_LOADING, a.messager.requestString());
                 break;
             case B3_Done:
                 a.gotoLayout(LAYOUT_4_DONE, a.messager.requestString());
@@ -172,6 +197,9 @@ public class Controller {
         dataProtect = false;
     }
 
+    /**
+     * @return
+     */
     String printMessageParameters() {
         a.messager.setRequestString(new String[]{deviceName, feed, value});
         return ""

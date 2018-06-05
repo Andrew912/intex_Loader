@@ -10,7 +10,9 @@ public class Messager {
             a;
 
     String
-            request_Device, request_Feed, request_Value;
+            request_Device,
+            request_Feed,
+            request_Value;
 
     public Messager(MainActivity activity) {
         this.a = activity;
@@ -19,11 +21,21 @@ public class Messager {
         request_Value = null;
     }
 
+    /**
+     * @param s
+     */
     void setRequestString(String[] s) {
-        request_Device = s[0];
-        request_Feed = s[1];
-        request_Value = s[2];
+        request_Device
+                = s[0];
+        request_Feed
+                = s[1];
+        request_Value
+                = s[2];
     }
+
+    /**
+     * @return
+     */
 
     public String requestString() {
         return request_Device + "\n" +

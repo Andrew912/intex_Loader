@@ -16,6 +16,8 @@ import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.example.and.loader.MainActivity.B1_Call;
+
 /**
  * Created by Андрей on 05.08.2017.
  */
@@ -154,15 +156,15 @@ public class Server {
                     p = ExtractParametersOfCommand(msg);
 
                     final String finalMsg = msg;
-                    activity.runOnUiThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            activity.printOut(finalMsg);
-                            // Определяем тип входящего сообщения и реакцию на него
-                            Choreographer();
-                        }
-                    });
+//                    activity.runOnUiThread(new Runnable() {
+//
+//                        @Override
+//                        public void run() {
+//                            activity.printOut(finalMsg);
+                    // Определяем тип входящего сообщения и реакцию на него
+                    Choreographer();
+//                        }
+//                    });
                     SocketServerReplyThread
                             socketServerReplyThread = new SocketServerReplyThread(
                             socket, count);
@@ -179,10 +181,12 @@ public class Server {
      * Обработка событий, связанных с поступающими сообщениями.
      * Определяет действие, исходя из статуса и входного сигнала.
      */
+
     void Choreographer() {
         FromDeviceMessageTypes messageType
                 = messageTypeIs();
         Log.i("Choreographer", "messageType=" + messageType);
+        Log.i("Choreographer", "==========================");
         /**
          * Если поступил запрос "Кто?", отправыть ответ
          */
@@ -190,6 +194,9 @@ public class Server {
             serverMessage = ServerMessage.NAME;
             return;
         }
+
+
+        Log.i("Choreographer", "STEP 1" + messageType);
 
         /**
          * Если отправитель - это не текущий юзер, то игнорируем все запросы, кроме
@@ -203,8 +210,12 @@ public class Server {
             } else {
                 serverMessage = ServerMessage.NONE;
             }
+
             return;
         }
+
+
+        Log.i("Choreographer", "STEP 2" + messageType);
 
         /**
          * Запрос на обслуживание.
@@ -220,6 +231,13 @@ public class Server {
                 // Статус ответа: NONE (неопределен)
                 if (activity.c.serverAcceptStatus == Controller.ServerAcceptStatus.NONE) {
                     // Это - первичный запрос на обслуживание
+
+                    Log.i("Choreographer", "b1_Call.CallOnClick");
+
+//                    if (activity.c.serverBusyStatus == Controller.ServerBusyStatus.FREE) {
+//                        activity.c.controller(B1_Call);
+//                    }
+
                     activity.b1_Call.callOnClick();
                 }
                 return;
@@ -245,6 +263,9 @@ public class Server {
             return;
         }
 
+
+        Log.i("Choreographer", "STEP 3" + messageType);
+
         /**
          * Сообщение о начале загрузки.
          * Если входящее сообщение "начало погрузки" и сервер "ожидает погрузку", то
@@ -264,6 +285,9 @@ public class Server {
             }
         }
 
+
+        Log.i("Choreographer", "STEP 4" + messageType);
+
         /**
          * Сообщение содержит вес
          *
@@ -277,11 +301,15 @@ public class Server {
             return;
         }
 
+
+        Log.i("Choreographer", "STEP 5" + messageType);
+
         /**
          * Сообщение - Остановка текущей операции
          */
         if (messageType == FromDeviceMessageTypes.LOAD_STOP) {
             // Статус сервера "ожидает вес"
+
             if (activity.c.serverStatus == Controller.ServerStatus.WAIT_WEIGHT) {
                 activity.b3_Done.callOnClick();
             }
@@ -358,9 +386,9 @@ public class Server {
         switch (serverMessage) {
             case NAME:
                 serverMessage = ServerMessage.NONE;
-                Log.i("makeMessageToReply", "return=" + activity.getString(R.string.SERVER_NAME));
                 return
-                        activity.getString(R.string.SERVER_NAME);
+                        "server='" +
+                                activity.getString(R.string.SERVER_NAME) + "'";
             case NONE:
                 return
                         activity.messager.msg_Ok() +
@@ -393,15 +421,15 @@ public class Server {
 
     // Выделяем отдельные команды
     public ArrayList<TableElement_MessageParameter> ExtractParametersOfCommand(String inS) {
-        Log.i(logTAG, "ExtractParametersOfCommand: inS='" + inS + "'");
+//        Log.i(logTAG, "ExtractParametersOfCommand: inS='" + inS + "'");
         ArrayList<TableElement_MessageParameter>
                 parameters;
         parameters
                 = new ArrayList<>();
         // Если это PING
-        Log.i(logTAG, "ExtractParametersOfCommand: who=" + inS.substring(0, 3));
+//        Log.i(logTAG, "ExtractParametersOfCommand: who=" + inS.substring(0, 3));
         if (inS.substring(0, 3).equals(activity.getString(R.string.WHO_ARE_YOU_STRING))) {
-            Log.i(logTAG, "ExtractParametersOfCommand: start");
+//            Log.i(logTAG, "ExtractParametersOfCommand: start");
             parameters.add(
                     new TableElement_MessageParameter(activity.getString(R.string.WHO_ARE_YOU_STRING), activity.getString(R.string.WHO_ARE_YOU_STRING)));
         } else {
@@ -413,7 +441,7 @@ public class Server {
                     = new TableElement_MessageParameter();
             while (matcher.find()) {
                 t = extractParam(matcher.group());
-                Log.i(logTAG, "ExtractParametersOfCommand: name=" + t.getName() + " value=" + t.getValue());
+//                Log.i(logTAG, "ExtractParametersOfCommand: name=" + t.getName() + " value=" + t.getValue());
                 parameters.add(t);
             }
         }
@@ -466,9 +494,14 @@ public class Server {
          * сохраненным в системе идентификатором Девайса.
          * Если идентификатор девайса не указан - ошибка.
          */
+
+        Log.i("paramUserCorrect", "device=" + getParam("device"));
+        Log.i("paramUserCorrect", "activity.c.deviceName=" + activity.c.deviceName);
+
         if (getParam("device").equals("null")) {
             return false;
         }
+
 
         if (activity.c.deviceName == null) {
             return true;
@@ -517,7 +550,7 @@ public class Server {
 //
 //                Wisdom
         if (isHTML == false) {
-            return message+"\r";
+            return message + "\r";
         }
         return
                 "HTTP/1.1 200 OK\n" +
