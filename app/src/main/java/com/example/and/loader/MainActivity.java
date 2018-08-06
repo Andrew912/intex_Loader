@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -77,9 +76,6 @@ public class MainActivity extends AppCompatActivity {
             server;
     Config
             config;
-    Configurator
-            conf;
-
     Timer
             timer_ClickButton_B4_Done,
             timer_ClickButton_B2_Accept;
@@ -592,19 +588,6 @@ public class MainActivity extends AppCompatActivity {
                 .setText(pmp);
         textWeight[3]
                 .setText(wr);
-    }
-
-    /**
-     * Вывод "тоста"
-     *
-     * @param whatSay
-     */
-    public void sayToast(String whatSay) {
-        Beep();
-        Toast toast
-                = Toast.makeText(this, whatSay, Toast.LENGTH_LONG);
-        toast
-                .show();
     }
 
 }

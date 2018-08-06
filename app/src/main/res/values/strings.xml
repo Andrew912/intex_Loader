@@ -23,7 +23,4 @@
     <!-- Строка запроса имени сервера -->
     <string name="WHO_ARE_YOU_STRING">who</string>
 
-    <!-- Системные сообщения -->
-    <string name="NETWORK_NOT_CONNECTED_WIFI">Не подключено к сети. Проверьте Wi-Fi</string>
-
 </resources>
