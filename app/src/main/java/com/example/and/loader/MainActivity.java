@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
             handlers_textWeight,
             handlers_layouts;
 
-
 //    Handler
 //            handler1,
 //            handler2,

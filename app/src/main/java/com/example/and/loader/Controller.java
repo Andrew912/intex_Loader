@@ -168,12 +168,17 @@ public class Controller {
     // Установка параметров операции из данных операции
     void setMessageParameters() {
         if (dataProtect == false) {
-            deviceName = getParam("device");
-            operId = getParam("oper");
-            value = getParam("value");
-            feed = getParam("feed");
+            deviceName
+                    = getParam("device");
+            operId
+                    = getParam("oper");
+            value
+                    = getParam("value");
+            feed
+                    = getParam("feed");
         }
-        weightRemain = getParam("weight");
+        weightRemain
+                = getParam("weight");
     }
 
     public String getParam(String pName) {
@@ -187,14 +192,22 @@ public class Controller {
     }
 
     void dataInit() {
-        serverBusyStatus = ServerBusyStatus.FREE;
-        serverStatus = ServerStatus.WAIT_REQUEST;
-        serverAcceptStatus = ServerAcceptStatus.NONE;
-        deviceName = null;
-        operId = null;
-        weightRemain = null;
-        controllerStatus = B0_Start;
-        dataProtect = false;
+        serverBusyStatus
+                = ServerBusyStatus.FREE;
+        serverStatus
+                = ServerStatus.WAIT_REQUEST;
+        serverAcceptStatus
+                = ServerAcceptStatus.NONE;
+        deviceName
+                = null;
+        operId
+                = null;
+        weightRemain
+                = null;
+        controllerStatus
+                = B0_Start;
+        dataProtect
+                = false;
     }
 
     /**

@@ -73,7 +73,8 @@ public class Server {
         Log.i("*****", "Server: Start");
         Thread socketServerThread
                 = new Thread(new SocketServerThread());
-        socketServerThread.start();
+        socketServerThread
+                .start();
     }
 
     // Определение типа входящего сообщения и реакция на него
