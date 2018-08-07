@@ -16,15 +16,6 @@ import static android.content.Context.WIFI_SERVICE;
 
 public class NetworkHandler {
 
-    /* Индексы возвращаемого значения String [] при работе с устройствами в сети */
-    public static int
-            NET_DEVICE_NAME = 0,    /* Имя устройства */
-            NET_DEVICE_ADDR = 1,    /* Адрес устройства - целое число ??? */
-            NET_DEVICE_PORT = 2,    /* Порт устройства */
-            NET_DEVICE_STAT = 3,    /* Статус устройства ??? */
-            NET_DEVICE_FULL = 4,    /* Полный сетевой адрес устройства */
-            NET_DEVICE_NOW = 5;     /* Устройство присутствует в сети */
-
     String
             logTag = "NetworkHandler";
     MainActivity
@@ -161,48 +152,6 @@ public class NetworkHandler {
     }
 
     /**
-     * Поиск всех устройств в сети с заданным в Configurator.terminalPort портом
-     *
-     * @param config
-     */
-    void findAllServersInNetwork(Configurator config) throws Exception {
-        // Выделяем IP-адрес из полного адреса
-        int myAddr
-                = extractAddress(config.ipAddress);
-        Log.i
-                (logTag, "myAddr=" + myAddr);
-        // Проходим по всему диапазону адресов
-        for (int i = 66; i < 90; i++) {
-            if (i != myAddr) {
-                tryConnectToAllServers(config.networkMask + i, config.terminalPort, 0);
-            }
-        }
-    }
-
-    /**
-     * Пробуем подключиться к серверу
-     *
-     * @param serverAddr
-     * @param serverPort
-     */
-    void tryConnectToAllServers(String serverAddr, int serverPort, int whatFind) throws Exception {
-        String
-                retVar;
-        Log.i
-                ("tryConnectToAllServers", "serverAddr=" + serverAddr + ", serverPort=" + serverPort);
-        ServerPingClass serverPing
-                = new ServerPingClass(activity, serverAddr, serverPort, whatFind);
-        activity.toStatusLineNoBlink
-                ("ServerPingClass=" + activity.sfc.numOfServerPingClasses.get(whatFind));
-        if (serverPing != null) {
-            retVar
-                    = serverPing.readServerName(whatFind);
-            Log.i
-                    (getClass().getSimpleName(), "retVar=" + retVar);
-        }
-    }
-
-    /**
      * Поиск в сети указанного устройства
      *
      * @param serverName - имя
@@ -213,89 +162,6 @@ public class NetworkHandler {
      * [0] - адрес
      * [1] - порт
      */
-    public String[] findServerInNetwork(String serverName, String serverAddr, int serverPort, int whatFind) throws Exception {
-        activity
-                .toStatusLineBlink("Find server = " + serverName);
-        Log.i
-                (getClass().getSimpleName(), "Поиск сервера: " + serverName + " at " + serverAddr);
-        String[] serverParameters
-                = {null, null, null, null, null};
-
-        /**
-         * Вообще сука проверяем, не пустой ли адрес (!=NULL).
-         * Если адрес пуст, то смысла искать сервер нет
-         */
-
-        /**
-         * Проверяем, нет ли сервера с заданным именем по указанному адресу
-         */
-        serverParameters[0] = tryConnectToServer(serverName, serverAddr, serverPort, whatFind);
-        if (serverParameters[NET_DEVICE_NAME] != null) {
-            if (serverParameters[NET_DEVICE_NAME].equals(serverName)) {
-                Log.i(getClass().getSimpleName(), "Поиск сервера в сетке 0: " + serverParameters[NET_DEVICE_NAME]);
-                return serverParameters;
-            }
-        }
-        /**
-         * Если сервер с указанными параметрами не найден, то проводим поиск по всей подсети
-         */
-        int tryAddr = 0;
-        // Выделяем IP-адрес из полного адреса, если он там есть. Если нет - равен 0.
-        int myAddr = extractAddress(serverAddr);
-        if (myAddr == 0) {
-
-            /* Надо подставить значение из конфигурации */
-            myAddr = Integer.parseInt(activity.getString(R.string.SERVER_FIND_START_ADDRESS));
-        }
-        // А теперь проходим по всем адресам, если отвечает, то типа нашли
-        for (int i = 1; i < 254; i++) {
-            // На адрес вниз
-            tryAddr = myAddr - i;
-            if (tryAddr > 1) {
-                serverParameters[0] = tryConnectToServer(serverName, activity.conf.networkMask + tryAddr, serverPort, whatFind);
-                if (serverParameters[NET_DEVICE_NAME] != null) {
-                    if (serverParameters[NET_DEVICE_NAME].equals(serverName)) {
-                        Log.i(getClass().getSimpleName(), "Поиск сервера в сетке 1: " + serverParameters[NET_DEVICE_NAME]);
-                        return serverParameters;
-                    }
-                }
-            }
-            // На адрес вверх
-            tryAddr = myAddr + i;
-            if (tryAddr < 255) {
-                serverParameters[0] = tryConnectToServer(serverName, activity.conf.networkMask + tryAddr, serverPort, whatFind);
-                if (serverParameters[NET_DEVICE_NAME] != null) {
-                    if (serverParameters[NET_DEVICE_NAME].equals(serverName)) {
-                        Log.i(getClass().getSimpleName(), "Поиск сервера в сетке 2: " + serverParameters[NET_DEVICE_NAME]);
-                        return serverParameters;
-                    }
-                }
-            }
-        }
-        // В данном случае ничего нужного в сетке не нашлось
-        // Log.i("Поиск сервера в сетке 3", " " + serverParameters[NET_DEVICE_NAME]);
-        return
-                serverParameters;
-    }
-
-    /**
-     * Пытаемся подключиться к конкретному серверу
-     *
-     * @param serverName
-     * @param serverAddr
-     * @param serverPort
-     * @return
-     */
-    public String tryConnectToServer(String serverName, String serverAddr, int serverPort, int whatFind) {
-        String returnVar;
-        ServerPingClass serverPing
-                = new ServerPingClass(activity, serverAddr, serverPort, whatFind);
-        returnVar
-                = serverPing.readServerName(whatFind);
-        return
-                returnVar;
-    }
-
     /**
      * Выделяет последниюю группу цифр IP-адреса, то есть адрес устройства в сети
      *
