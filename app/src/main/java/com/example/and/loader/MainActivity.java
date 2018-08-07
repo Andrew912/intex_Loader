@@ -549,15 +549,28 @@ public class MainActivity extends AppCompatActivity {
 
     //
     class Config {
-        MainActivity a;
-        String serverName;
-        int serverPort;
-        String deviceName;
+        MainActivity
+                a;
+        String
+                ipAddress = "";
+        String
+                networkMask = "";
+        String
+                serverName;
+        int
+                serverPort;
+        String
+                deviceName;
+        boolean
+                is_Connected_to_network = false;
 
         public Config(MainActivity activity) {
-            this.a = activity;
-            serverName = a.getString(R.string.SERVER_NAME);
-            serverPort = Integer.parseInt(a.getString(R.string.SERVER_PORT));
+            this.a
+                    = activity;
+            serverName
+                    = a.getString(R.string.SERVER_NAME);
+            serverPort
+                    = Integer.parseInt(a.getString(R.string.SERVER_PORT));
         }
 
 
