@@ -20,17 +20,17 @@
     <FrameLayout
         android:id="@+id/FrameMain"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="480dp"
         tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteX="4dp"
         tools:ignore="MissingConstraints">
 
         <LinearLayout
             android:id="@+id/L0"
             android:layout_width="match_parent"
-            android:layout_height="496dp"
             android:orientation="vertical"
-            android:visibility="invisible">
+            android:visibility="invisible"
+            android:layout_height="480dp">
 
             <TextView
                 android:id="@+id/text_0_info"
@@ -57,11 +57,11 @@
         <LinearLayout
             android:id="@+id/L1"
             android:layout_width="match_parent"
-            android:layout_height="495dp"
             android:gravity="bottom"
             android:orientation="vertical"
             android:visibility="invisible"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:layout_height="480dp">
 
             <TextView
                 android:id="@+id/text_1_Header"
@@ -103,11 +103,11 @@
         <LinearLayout
             android:id="@+id/L2_ServiceRequest"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:gravity="bottom"
             android:orientation="vertical"
             android:visibility="invisible"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:layout_height="480dp">
 
             <TextView
                 android:id="@+id/text_2_Header"
@@ -147,11 +147,11 @@
         <LinearLayout
             android:id="@+id/L3_Loading"
             android:layout_width="match_parent"
-            android:layout_height="494dp"
             android:gravity="bottom"
             android:orientation="vertical"
             android:visibility="invisible"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:layout_height="480dp">
 
             <TextView
                 android:id="@+id/text_3_Header"
@@ -221,11 +221,11 @@
         <LinearLayout
             android:id="@+id/L5_WaitBegin"
             android:layout_width="match_parent"
-            android:layout_height="495dp"
             android:gravity="bottom"
             android:orientation="vertical"
             android:visibility="invisible"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:layout_height="480dp">
 
             <TextView
                 android:id="@+id/text_5_Header"
@@ -296,11 +296,11 @@
         <LinearLayout
             android:id="@+id/L4_Done"
             android:layout_width="match_parent"
-            android:layout_height="502dp"
             android:gravity="bottom"
             android:orientation="vertical"
             android:visibility="invisible"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:layout_height="480dp">
 
             <TextView
                 android:id="@+id/text_4_Header"
