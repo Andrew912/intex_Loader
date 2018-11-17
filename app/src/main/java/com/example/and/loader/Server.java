@@ -35,7 +35,7 @@ public class Server {
     String
             message;
     static final int
-            socketServerPORT = 18080;
+            socketServerPORT = 28080;
     ArrayList<TableElement_MessageParameter>
             p;
     boolean
